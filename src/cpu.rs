@@ -179,10 +179,30 @@ impl Cpu {
                 self.pc += 2;
             }
             0xF => {
-                //I +=Vx
-                let vx = self.read_reg_vx(x);
-                self.i += vx as u16;
-                self.pc += 2;
+                match nn {
+                    0x07 => {
+                        self.write_reg_vx(x, bus.get_delay_timer());
+                        self.pc += 2;
+                    },
+                    0x15 => {
+                        bus.set_delay_timer(self.read_reg_vx(x));
+                        self.pc += 2;
+                    },
+                    0x65 => {
+                        for index in 0..x+1 {
+                            let value = bus.ram_read_byte(self.i + index as u16);
+                            self.write_reg_vx(index, value);
+                        }
+                        self.pc += 2;
+                    },
+                    0x1E => {
+                        //I +=Vx
+                        let vx = self.read_reg_vx(x);
+                        self.i += vx as u16;
+                        self.pc += 2;
+                    },
+                    _ => panic!("Unrecognized 0xF instruction {:#X}:{:#X}", self.pc, instruction)
+                }
             }
 
             _ => panic!("Unrecognized instruction {:#X}:{:#X}", self.pc, instruction),
@@ -204,7 +224,7 @@ impl Cpu {
             self.write_reg_vx(0xF, 0);
         }
 
-        //bus.present_screen();
+        bus.present_screen();
     }
 
     pub fn write_reg_vx(&mut self, index: u8, value: u8) {
@@ -218,7 +238,7 @@ impl Cpu {
 
 impl fmt::Debug for Cpu {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "pc: {:#X}\n", self.pc);
+        write!(f, "\npc: {:#X}\n", self.pc);
         write!(f, "vx: ");
         for item in self.vx.iter() {
             write!(f, "{:#X} ", *item);
