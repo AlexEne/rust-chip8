@@ -2,6 +2,7 @@ use keyboard::Keyboard;
 use display::Display;
 use ram::Ram;
 use std::fmt;
+use minifb::Window;
 
 pub struct Bus {
     ram: Ram,
@@ -41,8 +42,16 @@ impl Bus {
         self.display.clear();
     }
 
-    pub fn key_pressed(&self, key_code: u8) -> bool {
-        self.keyboard.key_pressed(key_code)
+    pub fn set_key_pressed(&mut self, key: Option<u8>) {
+        self.keyboard.set_key_pressed(key);
+    }
+
+    pub fn is_key_pressed(&self, key_code: u8) -> bool {
+        self.keyboard.is_key_pressed(key_code)
+    }
+
+    pub fn get_key_pressed(&self) -> Option<u8> {
+        self.keyboard.get_key_pressed()
     }
 
     pub fn tick(&mut self) {
