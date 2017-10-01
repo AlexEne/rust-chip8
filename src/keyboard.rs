@@ -15,7 +15,6 @@ impl Keyboard {
 
     //Todo implement proper key handling
     pub fn is_key_pressed(&self, key_code: u8) -> bool {
-        return true;
         match self.key_pressed {
             Some(key) => key == key_code,
             _ => false

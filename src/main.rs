@@ -91,7 +91,6 @@ fn main() {
                 buffer[y*WIDTH + x] = color_pixel;
             }
         }
-        //std::thread::sleep_ms(16);
 
         window.update_with_buffer(&buffer).unwrap();
     }    
