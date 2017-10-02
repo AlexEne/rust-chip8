@@ -34,10 +34,6 @@ impl Bus {
         self.display.debug_draw_byte(byte, x, y)
     }
     
-    pub fn present_screen(&self) {
-        self.display.present();
-    }
-
     pub fn clear_screen(&mut self) {
         self.display.clear();
     }

@@ -1,5 +1,8 @@
 use bus::Bus;
 use std::fmt;
+use rand;
+use rand::distributions::{IndependentSample, Range};
+
 
 pub const PROGRAM_START: u16 = 0x200;
 
@@ -76,7 +79,7 @@ impl Cpu {
                 } else {
                     self.pc += 2;
                 }
-            },
+            }
             0x4 => {
                 //Skip next instruction if(Vx!=NN)
                 let vx = self.read_reg_vx(x);
@@ -101,19 +104,19 @@ impl Cpu {
                 let vx = self.read_reg_vx(x);
 
                 match n {
-                    0 => {
+                    0x0 => {
                         // Vx=Vy
                         self.write_reg_vx(x, vy);
                     }
-                    2 => {
+                    0x2 => {
                         // Vx=Vx&Vy
                         self.write_reg_vx(x, vx & vy);
                     }
-                    3 => {
+                    0x3 => {
                         // Vx=Vx^Vy
                         self.write_reg_vx(x, vx ^ vy);
                     }
-                    4 => {
+                    0x4 => {
                         //	Vx += Vy
                         let sum: u16 = vx as u16 + vy as u16;
                         self.write_reg_vx(x, sum as u8);
@@ -121,18 +124,34 @@ impl Cpu {
                             self.write_reg_vx(0xF, 1);
                         }
                     }
-                    5 => {
+                    0x5 => {
                         let diff: i8 = vx as i8 - vy as i8;
                         self.write_reg_vx(x, diff as u8);
                         if diff < 0 {
                             self.write_reg_vx(0xF, 1);
+                        } else {
+                            self.write_reg_vx(0xF, 0);
                         }
                     }
-                    6 => {
+                    0x6 => {
                         // Vx=Vy=Vy>>1
-                        self.write_reg_vx(0xF, vy & 0x1);
-                        self.write_reg_vx(y, vy >> 1);
-                        self.write_reg_vx(x, vy >> 1);
+                        self.write_reg_vx(0xF, vx & 0x1);
+                        self.write_reg_vx(x, vx >> 1);
+                    },
+                    0x7 => {
+                        let diff: i8 = vy as i8 - vx as i8;
+                        self.write_reg_vx(x, diff as u8);
+                        if diff < 0 {
+                            self.write_reg_vx(0xF, 1);
+                        } else {
+                            self.write_reg_vx(0xF, 0);
+                        }
+                    },
+                    0xE => {
+                        // 0xF is the most significant bit value.
+                        // SHR Vx
+                        self.write_reg_vx(0xF, (vx & 0x80) >> 7) ;
+                        self.write_reg_vx(x, vx << 1);
                     }
                     _ => panic!(
                         "Unrecognized 0x8XY* instruction {:#X}:{:#X}",
@@ -141,6 +160,31 @@ impl Cpu {
                     ),
                 };
 
+                self.pc += 2;
+            }
+            0x9 => {
+                //skips the next instruction if(Vx!=Vy)
+                let vx = self.read_reg_vx(x);
+                let vy = self.read_reg_vx(y);
+                if vx != vy {
+                    self.pc += 4;
+                } else {
+                    self.pc += 2;
+                }
+            },
+            0xA => {
+                self.i = nnn;
+                self.pc += 2;
+            },
+            0xB => {
+                self.pc = self.read_reg_vx(0) as u16 + nnn;
+            },
+            0xC => {
+                // Vx=rand()&NN
+                let mut rng = rand::thread_rng();
+                let interval = Range::new(0, 255);
+                let number = interval.ind_sample(&mut rng);
+                self.write_reg_vx(x, number & nn);
                 self.pc += 2;
             }
             0xD => {
@@ -177,17 +221,12 @@ impl Cpu {
                     ),
                 };
             }
-            0xA => {
-                //I = NNN
-                self.i = nnn;
-                self.pc += 2;
-            }
             0xF => {
                 match nn {
                     0x07 => {
                         self.write_reg_vx(x, bus.get_delay_timer());
                         self.pc += 2;
-                    },
+                    }
                     0x0A => {
                         let key = bus.get_key_pressed();
                         match key {
@@ -195,9 +234,9 @@ impl Cpu {
                                 self.write_reg_vx(x, val);
                                 self.pc += 2;
                             }
-                            None => ()
+                            None => (),
                         }
-                    },
+                    }
                     0x15 => {
                         bus.set_delay_timer(self.read_reg_vx(x));
                         self.pc += 2;
@@ -206,20 +245,47 @@ impl Cpu {
                         // TODO Sound timer
                         self.pc += 2;
                     },
-                    0x65 => {
-                        for index in 0..x+1 {
-                            let value = bus.ram_read_byte(self.i + index as u16);
-                            self.write_reg_vx(index, value);
-                        }
-                        self.pc += 2;
-                    },
                     0x1E => {
                         //I +=Vx
                         let vx = self.read_reg_vx(x);
                         self.i += vx as u16;
                         self.pc += 2;
                     },
-                    _ => panic!("Unrecognized 0xF instruction {:#X}:{:#X}", self.pc, instruction)
+                    0x29 => {
+                        //i == sprite address for character in Vx
+                        //Multiply by 5 because each sprite has 5 lines, each line
+                        //is 1 byte.
+                        self.i = self.read_reg_vx(x) as u16 * 5;
+                        self.pc += 2;
+                    },
+                    0x33 => {
+                        let vx = self.read_reg_vx(x);
+                        bus.ram_write_byte(self.i, vx / 100);
+                        bus.ram_write_byte(self.i + 1, (vx % 100) / 10);
+                        bus.ram_write_byte(self.i + 2, vx % 10);
+                        self.pc += 2;
+                    },
+                    0x55 => {
+                        for index in 0..x + 1 {
+                            let value = self.read_reg_vx(index);
+                            bus.ram_write_byte(self.i + index as u16, value);
+                        }
+                        self.i += x as u16 + 1;
+                        self.pc += 2;
+                    },
+                    0x65 => {
+                        for index in 0..x + 1 {
+                            let value = bus.ram_read_byte(self.i + index as u16);
+                            self.write_reg_vx(index, value);
+                        }
+                        self.i += x as u16 + 1;
+                        self.pc += 2;
+                    },
+                    _ => panic!(
+                        "Unrecognized 0xF instruction {:#X}:{:#X}",
+                        self.pc,
+                        instruction
+                    ),
                 }
             }
 

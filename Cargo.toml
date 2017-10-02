@@ -5,3 +5,4 @@ authors = ["Alexandru <alex.ene0x11@gmail.com>"]
 
 [dependencies]
 minifb = "0.10.2"
+rand = "0.3"
