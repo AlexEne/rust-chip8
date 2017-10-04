@@ -1,7 +1,6 @@
 use bus::Bus;
 use cpu;
 use cpu::Cpu;
-use minifb::Window;
 
 pub struct Chip8 {
     bus: Bus,
