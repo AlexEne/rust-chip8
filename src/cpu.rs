@@ -11,6 +11,7 @@ pub struct Cpu {
     pc: u16,
     i: u16,
     ret_stack: Vec<u16>,
+    rng: rand::ThreadRng
 }
 
 
@@ -21,6 +22,7 @@ impl Cpu {
             pc: PROGRAM_START,
             i: 0,
             ret_stack: Vec::<u16>::new(),
+            rng: rand::thread_rng()
         }
     }
 
@@ -88,6 +90,16 @@ impl Cpu {
                 } else {
                     self.pc += 2;
                 }
+            },
+            0x5 => {
+                //Skip next instruction if(Vx==Vy)
+                let vx = self.read_reg_vx(x);
+                let vy = self.read_reg_vx(y);
+                if vx == vy {
+                    self.pc += 4;
+                } else {
+                    self.pc += 2;
+                }
             }
             0x6 => {
                 //vx = nn
@@ -134,7 +146,7 @@ impl Cpu {
                         }
                     }
                     0x6 => {
-                        // Vx=Vy=Vy>>1
+                        // Vx=Vx>>1
                         self.write_reg_vx(0xF, vx & 0x1);
                         self.write_reg_vx(x, vx >> 1);
                     },
@@ -148,7 +160,7 @@ impl Cpu {
                         }
                     },
                     0xE => {
-                        // 0xF is the most significant bit value.
+                        // VF is the most significant bit value.
                         // SHR Vx
                         self.write_reg_vx(0xF, (vx & 0x80) >> 7) ;
                         self.write_reg_vx(x, vx << 1);
@@ -180,10 +192,9 @@ impl Cpu {
                 self.pc = self.read_reg_vx(0) as u16 + nnn;
             },
             0xC => {
-                // Vx=rand()&NN
-                let mut rng = rand::thread_rng();
+                // Vx=rand() & NN
                 let interval = Range::new(0, 255);
-                let number = interval.ind_sample(&mut rng);
+                let number = interval.ind_sample(&mut self.rng);
                 self.write_reg_vx(x, number & nn);
                 self.pc += 2;
             }
