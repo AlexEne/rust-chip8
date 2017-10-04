@@ -11,7 +11,7 @@ pub struct Cpu {
     pc: u16,
     i: u16,
     ret_stack: Vec<u16>,
-    rng: rand::ThreadRng
+    rng: rand::ThreadRng,
 }
 
 
@@ -22,7 +22,7 @@ impl Cpu {
             pc: PROGRAM_START,
             i: 0,
             ret_stack: Vec::<u16>::new(),
-            rng: rand::thread_rng()
+            rng: rand::thread_rng(),
         }
     }
 
@@ -90,7 +90,7 @@ impl Cpu {
                 } else {
                     self.pc += 2;
                 }
-            },
+            }
             0x5 => {
                 //Skip next instruction if(Vx==Vy)
                 let vx = self.read_reg_vx(x);
@@ -149,7 +149,7 @@ impl Cpu {
                         // Vx=Vx>>1
                         self.write_reg_vx(0xF, vx & 0x1);
                         self.write_reg_vx(x, vx >> 1);
-                    },
+                    }
                     0x7 => {
                         let diff: i8 = vy as i8 - vx as i8;
                         self.write_reg_vx(x, diff as u8);
@@ -158,11 +158,11 @@ impl Cpu {
                         } else {
                             self.write_reg_vx(0xF, 0);
                         }
-                    },
+                    }
                     0xE => {
                         // VF is the most significant bit value.
                         // SHR Vx
-                        self.write_reg_vx(0xF, (vx & 0x80) >> 7) ;
+                        self.write_reg_vx(0xF, (vx & 0x80) >> 7);
                         self.write_reg_vx(x, vx << 1);
                     }
                     _ => panic!(
@@ -183,14 +183,14 @@ impl Cpu {
                 } else {
                     self.pc += 2;
                 }
-            },
+            }
             0xA => {
                 self.i = nnn;
                 self.pc += 2;
-            },
+            }
             0xB => {
                 self.pc = self.read_reg_vx(0) as u16 + nnn;
-            },
+            }
             0xC => {
                 // Vx=rand() & NN
                 let interval = Range::new(0, 255);
@@ -251,31 +251,31 @@ impl Cpu {
                     0x15 => {
                         bus.set_delay_timer(self.read_reg_vx(x));
                         self.pc += 2;
-                    },
+                    }
                     0x18 => {
                         // TODO Sound timer
                         self.pc += 2;
-                    },
+                    }
                     0x1E => {
                         //I +=Vx
                         let vx = self.read_reg_vx(x);
                         self.i += vx as u16;
                         self.pc += 2;
-                    },
+                    }
                     0x29 => {
                         //i == sprite address for character in Vx
                         //Multiply by 5 because each sprite has 5 lines, each line
                         //is 1 byte.
                         self.i = self.read_reg_vx(x) as u16 * 5;
                         self.pc += 2;
-                    },
+                    }
                     0x33 => {
                         let vx = self.read_reg_vx(x);
                         bus.ram_write_byte(self.i, vx / 100);
                         bus.ram_write_byte(self.i + 1, (vx % 100) / 10);
                         bus.ram_write_byte(self.i + 2, vx % 10);
                         self.pc += 2;
-                    },
+                    }
                     0x55 => {
                         for index in 0..x + 1 {
                             let value = self.read_reg_vx(index);
@@ -283,7 +283,7 @@ impl Cpu {
                         }
                         self.i += x as u16 + 1;
                         self.pc += 2;
-                    },
+                    }
                     0x65 => {
                         for index in 0..x + 1 {
                             let value = bus.ram_read_byte(self.i + index as u16);
@@ -291,7 +291,7 @@ impl Cpu {
                         }
                         self.i += x as u16 + 1;
                         self.pc += 2;
-                    },
+                    }
                     _ => panic!(
                         "Unrecognized 0xF instruction {:#X}:{:#X}",
                         self.pc,
