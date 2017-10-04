@@ -41,7 +41,7 @@ fn get_chip8_keycode_for(key: Option<Key>) -> Option<u8> {
 }
 
 fn main() {
-    let mut file = File::open("data/MERLIN").unwrap();
+    let mut file = File::open("data/INVADERS").unwrap();
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data).expect("File not found!");
 
@@ -93,8 +93,8 @@ fn main() {
         let chip8_buffer = chip8.get_display_buffer();
 
 
-        for y in 0..width {
-            for x in 0..height {
+        for y in 0..height {
+            for x in 0..width {
                 let index = Display::get_index_from_coords(x / 10, y / 10);
                 let pixel = chip8_buffer[index];
                 let color_pixel = match pixel {
@@ -106,6 +106,6 @@ fn main() {
             }
         }
 
-        window.update_with_buffer(&buffer).unwrap();
+        window.update_with_buffer(&buffer);
     }
 }
