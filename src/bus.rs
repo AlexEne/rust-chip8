@@ -2,7 +2,6 @@ use keyboard::Keyboard;
 use display::Display;
 use ram::Ram;
 use std::fmt;
-use minifb::Window;
 
 pub struct Bus {
     ram: Ram,

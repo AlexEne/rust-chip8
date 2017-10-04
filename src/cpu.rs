@@ -331,12 +331,12 @@ impl Cpu {
 
 impl fmt::Debug for Cpu {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "\npc: {:#X}\n", self.pc);
-        write!(f, "vx: ");
+        write!(f, "\npc: {:#X}\n", self.pc)?;
+        write!(f, "vx: ")?;
         for item in self.vx.iter() {
-            write!(f, "{:#X} ", *item);
+            write!(f, "{:#X} ", *item)?;
         }
-        write!(f, "\n");
+        write!(f, "\n")?;
         write!(f, "i: {:#X}\n", self.i)
     }
 }
