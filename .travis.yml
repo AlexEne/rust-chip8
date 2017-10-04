@@ -6,3 +6,6 @@ rust:
 matrix:
   allow_failures:
     - rust: nightly
+
+before_script:
+  - sudo apt-get install xorg-dev  
