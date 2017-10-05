@@ -7,6 +7,7 @@ use std::io::Read;
 use chip8::Chip8;
 use display::Display;
 use std::time::{Duration, Instant};
+use std::env;
 
 mod ram;
 mod cpu;
@@ -41,7 +42,12 @@ fn get_chip8_keycode_for(key: Option<Key>) -> Option<u8> {
 }
 
 fn main() {
-    let mut file = File::open("data/INVADERS").unwrap();
+    let args: Vec<String> = env::args().collect();
+    let file_name = match args.len() {
+        0 | 1 => "data/INVADERS",
+        _ => args.get(1).unwrap(),
+    };
+    let mut file = File::open(file_name).unwrap();
     let mut data = Vec::<u8>::new();
     file.read_to_end(&mut data).expect("File not found!");
 
