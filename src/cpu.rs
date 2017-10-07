@@ -146,9 +146,10 @@ impl Cpu {
                         }
                     }
                     0x6 => {
-                        // Vx=Vx>>1
-                        self.write_reg_vx(0xF, vx & 0x1);
-                        self.write_reg_vx(x, vx >> 1);
+                        // Vx=Vy=Vy>>1
+                        self.write_reg_vx(0xF, vy & 0x1);
+                        self.write_reg_vx(x, vy >> 1);
+                        self.write_reg_vx(y, vy >> 1);
                     }
                     0x7 => {
                         let diff: i8 = vy as i8 - vx as i8;
@@ -162,8 +163,10 @@ impl Cpu {
                     0xE => {
                         // VF is the most significant bit value.
                         // SHR Vx
-                        self.write_reg_vx(0xF, (vx & 0x80) >> 7);
-                        self.write_reg_vx(x, vx << 1);
+                        //Vx=Vy=Vy<<1
+                        self.write_reg_vx(0xF, (vy & 0x80) >> 7);
+                        self.write_reg_vx(x, vy << 1);
+                        self.write_reg_vx(y, vy << 1);
                     }
                     _ => panic!(
                         "Unrecognized 0x8XY* instruction {:#X}:{:#X}",
