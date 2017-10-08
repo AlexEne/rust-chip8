@@ -11,6 +11,7 @@ https://www.youtube.com/playlist?list=PLPv6awLpSB_diKBY_95ip0jL1uT7i_rJP
 # How to play the games:
 
 The entire chip8 keyboard is mapped like this:
+
 Chip8 keyboard:
 
 | | | | |
