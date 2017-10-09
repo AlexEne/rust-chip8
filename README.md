@@ -1,5 +1,8 @@
 
-[![Build Status](https://travis-ci.org/AlexEne/rust-chip8.svg?branch=master)](https://travis-ci.org/AlexEne/rust-chip8)
+[![Build Status](https://travis-ci.org/AlexEne/rust-chip8.svg?branch=master)](https://travis-ci.org/AlexEne/rust-chip8)  
+[![Build status](https://ci.appveyor.com/api/projects/status/s7xohm4s57m0xhhg?svg=true)](https://ci.appveyor.com/project/AlexEne/rust-chip8)
+
+
 
 # rust-chip8
 Chip8 emulator in rust
