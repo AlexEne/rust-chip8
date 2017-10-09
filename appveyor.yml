@@ -38,8 +38,7 @@ matrix:
 
 ## Install Script ##
 install:
-- ps: >-
-    If ($Env:TARGET -eq 'x86_64-pc-windows-gnu') {
+- ps: If ($Env:TARGET -eq 'x86_64-pc-windows-gnu') {
       $Env:PATH += ';C:\msys64\mingw64\bin'
     } ElseIf ($Env:TARGET -eq 'i686-pc-windows-gnu') {
       $Env:PATH += ';C:\msys64\mingw32\bin'
@@ -71,4 +70,4 @@ test_script:
 # cause each commit to be tested twice, once for the branch and once for the pull request.
 branches:
   only:
-- master
+    - master
