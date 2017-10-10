@@ -34,7 +34,12 @@ Is mapped to:
 
 
 ### Tetris controls:
-* Q - Rotate Piece
-* W - Move Left
-* E - Move Right
+* Q - Rotate piece
+* W - Move left
+* E - Move right
 * A - Fast drop
+
+### Invaders controls:
+* Q - Move left
+* E - Move right
+* W - Shoot weapon
