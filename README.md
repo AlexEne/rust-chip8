@@ -33,12 +33,8 @@ Is mapped to:
 |Z|X|C|V|
 
 
-Tetris controlls:
-
-Q - Rotate Piece
-
-W - Move Left
-
-E - Move Right
-
-A - Fast drop
+### Tetris controlls:
+* Q - Rotate Piece
+* W - Move Left
+* E - Move Right
+* A - Fast drop
