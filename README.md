@@ -33,7 +33,7 @@ Is mapped to:
 |Z|X|C|V|
 
 
-### Tetris controlls:
+### Tetris controls:
 * Q - Rotate Piece
 * W - Move Left
 * E - Move Right
