@@ -239,13 +239,9 @@ impl Cpu {
                         self.pc += 2;
                     }
                     0x0A => {
-                        let key = bus.get_key_pressed();
-                        match key {
-                            Some(val) => {
-                                self.write_reg_vx(x, val);
-                                self.pc += 2;
-                            }
-                            None => (),
+                        if let Some(val) = bus.get_key_pressed() {
+                            self.write_reg_vx(x, val);
+                            self.pc += 2;
                         }
                     }
                     0x15 => {
