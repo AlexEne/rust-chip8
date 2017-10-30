@@ -36,7 +36,7 @@ impl Display {
             }
 
             coord_x += 1;
-            b = b << 1;
+            b <<= 1;
         }
 
         erased

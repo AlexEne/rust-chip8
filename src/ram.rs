@@ -29,7 +29,7 @@ impl Ram {
         ];
 
         let mut i = 0;
-        for sprite in sprites.iter() {
+        for sprite in &sprites {
             for ch in sprite {
                 ram.mem[i] = *ch;
                 i += 1;

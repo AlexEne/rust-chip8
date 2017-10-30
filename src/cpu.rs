@@ -239,13 +239,9 @@ impl Cpu {
                         self.pc += 2;
                     }
                     0x0A => {
-                        let key = bus.get_key_pressed();
-                        match key {
-                            Some(val) => {
-                                self.write_reg_vx(x, val);
-                                self.pc += 2;
-                            }
-                            None => (),
+                        if let Some(val) = bus.get_key_pressed() {
+                            self.write_reg_vx(x, val);
+                            self.pc += 2;
                         }
                     }
                     0x15 => {
@@ -332,7 +328,7 @@ impl fmt::Debug for Cpu {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "\npc: {:#X}\n", self.pc)?;
         write!(f, "vx: ")?;
-        for item in self.vx.iter() {
+        for item in &self.vx {
             write!(f, "{:#X} ", *item)?;
         }
         write!(f, "\n")?;

@@ -76,7 +76,7 @@ fn main() {
     while window.is_open() && !window.is_key_down(Key::Escape) {
         let keys_pressed = window.get_keys_pressed(KeyRepeat::Yes);
         let key = match keys_pressed {
-            Some(keys) => if keys.len() > 0 {
+            Some(keys) => if !keys.is_empty() {
                 Some(keys[0])
             } else {
                 None
