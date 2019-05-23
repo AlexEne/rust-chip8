@@ -63,7 +63,7 @@ fn main() {
         height,
         WindowOptions::default(),
     ).unwrap_or_else(|e| {
-        panic!("Wdindow creation failed: {:?}", e);
+        panic!("Window creation failed: {:?}", e);
     });
 
     let mut chip8 = Chip8::new();
