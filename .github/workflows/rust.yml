@@ -3,7 +3,7 @@ name: Build
 on: [push]
 
 jobs:
-  Test_Linux:
+  Build_Linux:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -16,7 +16,7 @@ jobs:
     - name: Build
       run: cargo build --verbose
   
-  Test_MacOS:
+  Build_MacOS:
     runs-on: macOS-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         export PATH="$HOME/.cargo/bin:$PATH"
         cargo build --verbose
 
-  Test_Windows:
+  Build_Windows:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
