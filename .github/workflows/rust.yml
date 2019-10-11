@@ -33,7 +33,10 @@ jobs:
         cargo build --verbose
 
   Test_Windows:
-    runs-on: windows-2016
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2016, windows-latest]
    
     steps:
     - uses: actions/checkout@v1
