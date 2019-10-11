@@ -1,0 +1,37 @@
+name: Build
+
+on: [push]
+
+jobs:
+  Build_Linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: cargo build --verbose
+  
+  Build_MacOS:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: install_dependencies
+      run: | 
+        brew install rustup
+        rustup-init -y --default-toolchain stable        
+    - name: Build
+      run: |
+        export PATH="$HOME/.cargo/bin:$PATH"
+        cargo build --verbose
+
+  Build_Windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2016, windows-latest]
+   
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: cargo build --verbose
