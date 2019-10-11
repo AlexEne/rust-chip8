@@ -3,13 +3,11 @@ name: Build
 on: [push]
 
 jobs:
-  Test_Linux:
+  Build_Linux:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: Checkout
-      run: sudo apt-get install xorg-dev
     - name: Build
       run: cargo build --verbose
   
