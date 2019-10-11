@@ -1,5 +1,5 @@
 
-[![](https://github.com/AlexEne/rust-chip8/workflows/Tests/badge.svg)](https://github.com/AlexEne/rust-chip8/actions)
+[![](https://github.com/AlexEne/rust-chip8/workflows/Build/badge.svg)](https://github.com/AlexEne/rust-chip8/actions)
 
 # rust-chip8
 Chip8 emulator in rust
