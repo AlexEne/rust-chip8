@@ -1,0 +1,43 @@
+name: Build
+
+on: [push]
+
+jobs:
+  Test_Linux:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04]
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Checkout
+      run: git submodule update --init
+    - name: Build
+      run: cargo build --verbose
+  
+  Test_MacOS:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: checkout
+      run: git submodule update --init 
+    - name: install_dependencies
+      run: | 
+        brew install rustup
+        rustup-init -y --default-toolchain stable        
+    - name: Build
+      run: |
+        export PATH="$HOME/.cargo/bin:$PATH"
+        cargo build --verbose
+
+  Test_Windows:
+    runs-on: windows-2016
+   
+    steps:
+    - uses: actions/checkout@v1
+    - name: Checkout
+      run: git submodule update --init
+    - name: Build
+      run: cargo build --verbose
